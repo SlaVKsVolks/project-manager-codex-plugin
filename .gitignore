@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+scripts/wrapper-src/bin/
+scripts/wrapper-src/obj/
+scripts/wrapper-build/
+

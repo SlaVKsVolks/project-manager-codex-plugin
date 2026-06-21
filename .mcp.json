@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "project-manager": {
+      "type": "stdio",
+      "command": "./scripts/project-manager-mcp.exe",
+      "args": [
+      ],
+      "cwd": "."
+    }
+  }
+}

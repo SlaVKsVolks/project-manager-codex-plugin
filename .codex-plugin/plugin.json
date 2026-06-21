@@ -1,0 +1,27 @@
+{
+  "name": "project-manager",
+  "version": "0.3.7+codex.20260620164500",
+  "description": "Cross-project Codex manager plugin with heartbeat-oriented worker coordination, model intelligence, export health checks, host-action atomic transactions, dashboards, and manager-only MCP tools.",
+  "author": {
+    "name": "Local developer"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Project Manager",
+    "shortDescription": "Manage Codex worker threads across projects.",
+    "longDescription": "Adds Project Manager skills, helper scripts, and MCP tools for manager-thread heartbeats, model-aware worker dispatch, export/proxy health checks, host-action atomic transaction contracts, crash forensics, cross-project summaries, worker-final validation, and cross-project coordination without hard-coded repo rules.",
+    "developerName": "Local developer",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write",
+      "Interactive"
+    ],
+    "defaultPrompt": [
+      "Run a manager tick and tell me the next action.",
+      "Prepare and verify a worker dispatch for this assignment.",
+      "Run restart recovery from the project ledger."
+    ]
+  },
+  "mcpServers": "./.mcp.json"
+}

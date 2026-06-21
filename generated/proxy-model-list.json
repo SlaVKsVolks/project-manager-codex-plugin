@@ -1,0 +1,658 @@
+{
+  "metadata": {
+    "cachePluginRoot": "C:\\Users\\SlaVKs\\.codex\\plugins\\cache\\personal\\project-manager",
+    "exportMode": "active_root",
+    "generatedAt": "2026-06-20T19:53:10Z",
+    "generatedFromRoot": "C:\\Users\\SlaVKs\\.codex\\plugins\\local-marketplaces\\personal\\plugins\\project-manager",
+    "liveModelsPath": "C:\\Users\\SlaVKs\\.codex\\models.json",
+    "modelListSha256": "b11a37c10133a6e6e5eaadcbc4407f42edc6ce30331bde699d5d5026ae42e85b",
+    "pluginVersion": "0.3.7+codex.20260620164500",
+    "sha256": "b11a37c10133a6e6e5eaadcbc4407f42edc6ce30331bde699d5d5026ae42e85b",
+    "sourcePluginRoot": "C:\\Users\\SlaVKs\\.codex\\plugins\\local-marketplaces\\personal\\plugins\\project-manager",
+    "testMode": false
+  },
+  "models": [
+    {
+      "auto_compact_token_limit": null,
+      "avoid_for": [
+        "bulk worker fan-out",
+        "cheap repetitive scans"
+      ],
+      "avoid_for_summary": "Avoid using it as a cheap bulk worker lane when a lower-cost worker is sufficient.",
+      "compatibility_class": "native",
+      "compatibility_notes": "Native Codex model with the strongest expected tool and thread parity.",
+      "context_window": 272000,
+      "continuation_reliability": "strong",
+      "cost_class": "quota",
+      "default_reasoning_level": "medium",
+      "default_verbosity": "low",
+      "description": "Native Codex frontier manager/generalist. Best for top-level planning, architecture, serious debugging, and final review. Uses included Codex GPT quota.",
+      "display_name": "GPT-5.5",
+      "effective_context_window_percent": 100,
+      "input_modalities": [
+        "text",
+        "image"
+      ],
+      "known_failure_modes": [],
+      "max_context_window": 272000,
+      "policy_role": "root_manager",
+      "provider": "openai-quota",
+      "provider_credit_source": "codex-quota",
+      "provider_hint": "Uses included Codex GPT quota",
+      "provider_label": "Codex GPT quota",
+      "reasoning_summary_format": "experimental",
+      "recommended_for": [
+        "root-cause analysis",
+        "architecture decisions",
+        "conflict resolution",
+        "final gate"
+      ],
+      "recommended_for_summary": "Native Codex frontier manager/generalist for root-cause analysis, architecture decisions, and final review.",
+      "role_hint": "root-manager",
+      "slug": "gpt-5.5",
+      "support_verbosity": true,
+      "supported_reasoning_levels": [
+        {
+          "description": "Fast responses with lighter reasoning",
+          "effort": "low"
+        },
+        {
+          "description": "Balances speed and reasoning depth for everyday tasks",
+          "effort": "medium"
+        },
+        {
+          "description": "Greater reasoning depth for complex problems",
+          "effort": "high"
+        },
+        {
+          "description": "Extra high reasoning depth for complex problems",
+          "effort": "xhigh"
+        }
+      ],
+      "supports_parallel_tool_calls": true,
+      "supports_reasoning_summaries": true,
+      "supports_search_tool": true,
+      "tool_loop_reliability": "strong",
+      "transport_route": "native",
+      "usage_tier": "manager_or_final_review",
+      "visibility": "list"
+    },
+    {
+      "auto_compact_token_limit": null,
+      "avoid_for": [
+        "cheap fan-out"
+      ],
+      "avoid_for_summary": "Avoid using it for cheap repetitive worker fan-out when a lower-cost worker will do.",
+      "compatibility_class": "native",
+      "compatibility_notes": "Native Codex model with strong tool-loop and review behavior.",
+      "context_window": 272000,
+      "continuation_reliability": "strong",
+      "cost_class": "quota",
+      "default_reasoning_level": "medium",
+      "default_verbosity": "low",
+      "description": "Native Codex generalist. Strong default for everyday coding, multi-step implementation, and review. Uses included Codex GPT quota.",
+      "display_name": "GPT-5.4",
+      "effective_context_window_percent": 100,
+      "input_modalities": [
+        "text",
+        "image"
+      ],
+      "known_failure_modes": [],
+      "max_context_window": 1000000,
+      "policy_role": "senior_reviewer",
+      "provider": "openai-quota",
+      "provider_credit_source": "codex-quota",
+      "provider_hint": "Uses included Codex GPT quota",
+      "provider_label": "Codex GPT quota",
+      "reasoning_summary_format": "experimental",
+      "recommended_for": [
+        "senior review",
+        "serious native implementation",
+        "behavior regressions",
+        "code quality review"
+      ],
+      "recommended_for_summary": "Native Codex default generalist for everyday coding, review, and larger multi-step implementation.",
+      "role_hint": "generalist-manager",
+      "slug": "gpt-5.4",
+      "support_verbosity": true,
+      "supported_reasoning_levels": [
+        {
+          "description": "Fast responses with lighter reasoning",
+          "effort": "low"
+        },
+        {
+          "description": "Balances speed and reasoning depth for everyday tasks",
+          "effort": "medium"
+        },
+        {
+          "description": "Greater reasoning depth for complex problems",
+          "effort": "high"
+        },
+        {
+          "description": "Extra high reasoning depth for complex problems",
+          "effort": "xhigh"
+        }
+      ],
+      "supports_parallel_tool_calls": true,
+      "supports_reasoning_summaries": true,
+      "supports_search_tool": true,
+      "tool_loop_reliability": "strong",
+      "transport_route": "native",
+      "usage_tier": "manager_or_final_review",
+      "visibility": "list"
+    },
+    {
+      "auto_compact_token_limit": null,
+      "avoid_for": [
+        "architecture-sensitive tasks",
+        "final approval"
+      ],
+      "avoid_for_summary": "Avoid final approval or architecture-sensitive ownership.",
+      "compatibility_class": "native",
+      "compatibility_notes": "Native Codex model with good tool compatibility, but intended for lighter work than GPT-5.4/5.5.",
+      "context_window": 272000,
+      "continuation_reliability": "strong",
+      "cost_class": "quota",
+      "default_reasoning_level": "medium",
+      "default_verbosity": "medium",
+      "description": "Native Codex fast GPT lane for simpler coding tasks, quick follow-ups, and light worker work. Uses included Codex GPT quota.",
+      "display_name": "GPT-5.4-Mini",
+      "effective_context_window_percent": 100,
+      "input_modalities": [
+        "text",
+        "image"
+      ],
+      "known_failure_modes": [],
+      "max_context_window": 272000,
+      "policy_role": "light_native_worker",
+      "provider": "openai-quota",
+      "provider_credit_source": "codex-quota",
+      "provider_hint": "Uses included Codex GPT quota",
+      "provider_label": "Codex GPT quota",
+      "reasoning_summary_format": "experimental",
+      "recommended_for": [
+        "small bug fixes",
+        "small tests",
+        "light native subagent work"
+      ],
+      "recommended_for_summary": "Native Codex fast GPT lane for simpler coding tasks, short tool loops, and light worker work.",
+      "role_hint": "light-native-worker",
+      "slug": "gpt-5.4-mini",
+      "support_verbosity": true,
+      "supported_reasoning_levels": [
+        {
+          "description": "Fast responses with lighter reasoning",
+          "effort": "low"
+        },
+        {
+          "description": "Balances speed and reasoning depth for everyday tasks",
+          "effort": "medium"
+        },
+        {
+          "description": "Greater reasoning depth for complex problems",
+          "effort": "high"
+        },
+        {
+          "description": "Extra high reasoning depth for complex problems",
+          "effort": "xhigh"
+        }
+      ],
+      "supports_parallel_tool_calls": true,
+      "supports_reasoning_summaries": true,
+      "supports_search_tool": true,
+      "tool_loop_reliability": "strong",
+      "transport_route": "native",
+      "usage_tier": "allowed_fallback",
+      "visibility": "list"
+    },
+    {
+      "auto_compact_token_limit": null,
+      "avoid_for": [
+        "multi-file features",
+        "architecture work",
+        "hidden-state debugging"
+      ],
+      "avoid_for_summary": "Avoid larger multi-file features or hidden-state debugging.",
+      "compatibility_class": "native",
+      "compatibility_notes": "Native Codex model optimized for speed over depth; keep the scope tight.",
+      "context_window": 128000,
+      "continuation_reliability": "strong",
+      "cost_class": "quota",
+      "default_reasoning_level": "high",
+      "default_verbosity": "low",
+      "description": "Native Codex ultra-fast micro-task lane for tiny edits, quick checks, and short bounded loops. Uses included Codex GPT quota.",
+      "display_name": "GPT-5.3-Codex-Spark",
+      "effective_context_window_percent": 100,
+      "input_modalities": [
+        "text"
+      ],
+      "known_failure_modes": [],
+      "max_context_window": 128000,
+      "policy_role": "micro_edit_worker",
+      "provider": "openai-quota",
+      "provider_credit_source": "codex-quota",
+      "provider_hint": "Uses included Codex GPT quota",
+      "provider_label": "Codex GPT quota",
+      "reasoning_summary_format": "experimental",
+      "recommended_for": [
+        "tiny edits",
+        "rename/fix/logging passes",
+        "interactive one-file loops"
+      ],
+      "recommended_for_summary": "Native Codex ultra-fast lane for very small edits, quick checks, and short bounded loops.",
+      "role_hint": "micro-edit-worker",
+      "slug": "gpt-5.3-codex-spark",
+      "support_verbosity": true,
+      "supported_reasoning_levels": [
+        {
+          "description": "Fast responses with lighter reasoning",
+          "effort": "low"
+        },
+        {
+          "description": "Balances speed and reasoning depth for everyday tasks",
+          "effort": "medium"
+        },
+        {
+          "description": "Greater reasoning depth for complex problems",
+          "effort": "high"
+        },
+        {
+          "description": "Extra high reasoning depth for complex problems",
+          "effort": "xhigh"
+        }
+      ],
+      "supports_parallel_tool_calls": true,
+      "supports_reasoning_summaries": true,
+      "supports_search_tool": true,
+      "tool_loop_reliability": "strong",
+      "transport_route": "native",
+      "usage_tier": "allowed_fallback",
+      "visibility": "list"
+    },
+    {
+      "auto_compact_token_limit": 200000,
+      "avoid_for": [
+        "final approval",
+        "wide architecture design"
+      ],
+      "avoid_for_summary": "Avoid final ownership, final review, and broad architecture decisions.",
+      "compatibility_class": "bridged",
+      "compatibility_notes": "Bridged through the local Responses/SSE proxy. The proxy maps Codex reasoning selection into worker-behavior instructions while keeping upstream provider thinking disabled for steadier tool use. GPT remains preferable for final ownership.",
+      "context_window": 1000000,
+      "continuation_reliability": "conditional",
+      "cost_class": "cheap",
+      "default_reasoning_level": "high",
+      "default_verbosity": "low",
+      "description": "Codex-tuned OpenCode Go cheap worker. 1M context, high-effort default, strong for fan-out implementation, bounded coding, and fast tool-driven work with steadier tool-use behavior. Uses OpenCode Go credits.",
+      "display_name": "DeepSeek V4 Flash",
+      "effective_context_window_percent": 95,
+      "input_modalities": [
+        "text"
+      ],
+      "known_failure_modes": [
+        "follow-up tool loops can degrade into raw unparsed tool-call text when transport shape drifts",
+        "tool-loop viability can look healthy on a fresh wrapper smoke while stale loaded sessions remain risky",
+        "comment-only reasoning lines can leak into PowerShell if proxy sanitization regresses"
+      ],
+      "max_context_window": 1000000,
+      "policy_role": "default_implementer",
+      "provider": "opencode-go",
+      "provider_credit_source": "opencode-go",
+      "provider_hint": "Uses OpenCode Go credits",
+      "provider_label": "OpenCode Go",
+      "reasoning_summary_format": null,
+      "recommended_for": [
+        "fan-out subagent implementation",
+        "small multi-step fix loops",
+        "mechanical refactors",
+        "routine spec review",
+        "routine log analysis"
+      ],
+      "recommended_for_summary": "Default cheap OpenCode Go worker for bounded implementation, quick fixes, and fan-out execution lanes.",
+      "role_hint": "cheap-worker",
+      "slug": "deepseek-v4-flash",
+      "support_verbosity": false,
+      "supported_reasoning_levels": [
+        {
+          "description": "Fastest bounded worker mode: one-pass reads, one narrow action, minimal exploration",
+          "effort": "low"
+        },
+        {
+          "description": "Balanced cheap-worker mode for ordinary implementation, light debugging, and short tool loops",
+          "effort": "medium"
+        },
+        {
+          "description": "Recommended default for steadier inspect-patch-verify loops and better follow-through on bounded tasks",
+          "effort": "high"
+        },
+        {
+          "description": "Maximum Codex-side care for stubborn bounded tasks before escalating to DeepSeek Pro or GPT review",
+          "effort": "xhigh"
+        }
+      ],
+      "supports_parallel_tool_calls": true,
+      "supports_reasoning_summaries": false,
+      "supports_search_tool": true,
+      "tool_loop_reliability": "conditional",
+      "transport_route": "chat",
+      "usage_tier": "default_implementation",
+      "visibility": "list"
+    },
+    {
+      "auto_compact_token_limit": 200000,
+      "avoid_for": [
+        "cheap bulk work"
+      ],
+      "avoid_for_summary": "Avoid using it for cheap repetitive work where Flash is sufficient.",
+      "compatibility_class": "bridged",
+      "compatibility_notes": "Bridged through the local Responses/SSE proxy. Best third-party implementation lane here when Flash is not enough.",
+      "context_window": 1000000,
+      "continuation_reliability": "strong",
+      "cost_class": "medium",
+      "default_reasoning_level": "high",
+      "default_verbosity": "low",
+      "description": "OpenCode Go escalation worker. 1M context, high-effort default, suited for harder debugging, multi-file fixes, and architecture-sensitive implementation. Uses OpenCode Go credits.",
+      "display_name": "DeepSeek V4 Pro",
+      "effective_context_window_percent": 95,
+      "input_modalities": [
+        "text"
+      ],
+      "known_failure_modes": [
+        "transport remains sensitive to stale loaded Codex sessions even when fresh wrapper smoke passes"
+      ],
+      "max_context_window": 1000000,
+      "policy_role": "escalation_implementer",
+      "provider": "opencode-go",
+      "provider_credit_source": "opencode-go",
+      "provider_hint": "Uses OpenCode Go credits",
+      "provider_label": "OpenCode Go",
+      "reasoning_summary_format": null,
+      "recommended_for": [
+        "higher-risk implementation",
+        "multi-file debugging",
+        "architecture-sensitive edits",
+        "fallback from degraded flash"
+      ],
+      "recommended_for_summary": "Escalation OpenCode Go worker for harder debugging, multi-file fixes, and architecture-sensitive implementation.",
+      "role_hint": "escalation-worker",
+      "slug": "deepseek-v4-pro",
+      "support_verbosity": false,
+      "supported_reasoning_levels": [
+        {
+          "description": "Quick pass when you want Pro's style with lower latency",
+          "effort": "low"
+        },
+        {
+          "description": "Balanced mode for hard coding, debugging, and nontrivial repo work",
+          "effort": "medium"
+        },
+        {
+          "description": "Recommended default for stubborn bugs, tricky tool loops, and larger multi-file reasoning",
+          "effort": "high"
+        },
+        {
+          "description": "Maximum effort and cost; reserve for the nastiest bugs, ambiguity, or review-heavy work",
+          "effort": "xhigh"
+        }
+      ],
+      "supports_parallel_tool_calls": true,
+      "supports_reasoning_summaries": false,
+      "supports_search_tool": true,
+      "tool_loop_reliability": "strong",
+      "transport_route": "chat",
+      "usage_tier": "escalation_implementation",
+      "visibility": "list"
+    },
+    {
+      "auto_compact_token_limit": 200000,
+      "avoid_for": [
+        "cheap repetitive helper work"
+      ],
+      "avoid_for_summary": "Avoid low-value cheap helper work when a simpler worker would suffice.",
+      "compatibility_class": "bridged",
+      "compatibility_notes": "Bridged through the local Responses/SSE proxy. Best third-party option for broad repo reading and synthesis before coding.",
+      "context_window": 1000000,
+      "continuation_reliability": "strong",
+      "cost_class": "medium",
+      "default_reasoning_level": "high",
+      "default_verbosity": "low",
+      "description": "OpenCode Go long-context analysis worker. 1M context, high-effort default, best for repo scans, planning, synthesis, and broad context reduction. Uses OpenCode Go credits.",
+      "display_name": "GLM-5.2",
+      "effective_context_window_percent": 95,
+      "input_modalities": [
+        "text"
+      ],
+      "known_failure_modes": [],
+      "max_context_window": 1000000,
+      "policy_role": "long_context_synthesizer",
+      "provider": "opencode-go",
+      "provider_credit_source": "opencode-go",
+      "provider_hint": "Uses OpenCode Go credits",
+      "provider_label": "OpenCode Go",
+      "reasoning_summary_format": null,
+      "recommended_for": [
+        "large-context scans",
+        "repo synthesis",
+        "architecture mapping",
+        "repo exploration"
+      ],
+      "recommended_for_summary": "Long-context OpenCode Go worker for large repo scans, planning, synthesis, and broad context reduction before implementation.",
+      "role_hint": "long-context-worker",
+      "slug": "glm-5.2",
+      "support_verbosity": false,
+      "supported_reasoning_levels": [
+        {
+          "description": "Quick long-context pass for broad scans and rough synthesis",
+          "effort": "low"
+        },
+        {
+          "description": "Balanced long-context mode for planning, repo reasoning, and implementation work",
+          "effort": "medium"
+        },
+        {
+          "description": "Recommended default for multi-file reasoning, tricky refactors, and architecture-sensitive work",
+          "effort": "high"
+        },
+        {
+          "description": "Maximum patience for ambiguous problems, long-context debugging, and stubborn architecture questions",
+          "effort": "xhigh"
+        }
+      ],
+      "supports_parallel_tool_calls": true,
+      "supports_reasoning_summaries": false,
+      "supports_search_tool": true,
+      "tool_loop_reliability": "strong",
+      "transport_route": "chat",
+      "usage_tier": "allowed_fallback",
+      "visibility": "list"
+    },
+    {
+      "auto_compact_token_limit": 190000,
+      "avoid_for": [
+        "cheap bulk scans"
+      ],
+      "avoid_for_summary": "Avoid cheap bulk scan work where GLM or MiMo is a better fit.",
+      "compatibility_class": "bridged",
+      "compatibility_notes": "Bridged through the local Responses/SSE proxy. Good second-pass coder when you want an independent implementation voice.",
+      "context_window": 262144,
+      "continuation_reliability": "strong",
+      "cost_class": "medium",
+      "default_reasoning_level": "high",
+      "default_verbosity": "low",
+      "description": "OpenCode Go coding specialist. 262k context, high-effort default, strong for direct edits, debugging, tests, and second-pass implementation work. Uses OpenCode Go credits.",
+      "display_name": "Kimi K2.7 Code",
+      "effective_context_window_percent": 95,
+      "input_modalities": [
+        "text"
+      ],
+      "known_failure_modes": [],
+      "max_context_window": 262144,
+      "policy_role": "rival_coder",
+      "provider": "opencode-go",
+      "provider_credit_source": "opencode-go",
+      "provider_hint": "Uses OpenCode Go credits",
+      "provider_label": "OpenCode Go",
+      "reasoning_summary_format": null,
+      "recommended_for": [
+        "independent second implementation",
+        "adversarial debugging pass",
+        "code-heavy implementation"
+      ],
+      "recommended_for_summary": "Coding-specialist OpenCode Go worker for direct edits, debugging, tests, and second-pass implementation.",
+      "role_hint": "coding-specialist-worker",
+      "slug": "kimi-k2.7-code",
+      "support_verbosity": false,
+      "supported_reasoning_levels": [
+        {
+          "description": "Fast coding pass when latency matters more than completeness",
+          "effort": "low"
+        },
+        {
+          "description": "Balanced mode for edits, debugging, and test-oriented code work",
+          "effort": "medium"
+        },
+        {
+          "description": "Recommended default for subtle bugs, larger changes, and steadier coding work",
+          "effort": "high"
+        },
+        {
+          "description": "Use when the bug is stubborn and you want extra persistence before escalating to a GPT manager",
+          "effort": "xhigh"
+        }
+      ],
+      "supports_parallel_tool_calls": true,
+      "supports_reasoning_summaries": false,
+      "supports_search_tool": true,
+      "tool_loop_reliability": "strong",
+      "transport_route": "chat",
+      "usage_tier": "allowed_fallback",
+      "visibility": "list"
+    },
+    {
+      "auto_compact_token_limit": 200000,
+      "avoid_for": [
+        "serious architecture or final review"
+      ],
+      "avoid_for_summary": "Avoid serious architecture decisions or final review ownership.",
+      "compatibility_class": "bridged",
+      "compatibility_notes": "Bridged through the local Responses/SSE proxy. Best used for tightly bounded helper work rather than broad ownership.",
+      "context_window": 1000000,
+      "continuation_reliability": "strong",
+      "cost_class": "cheap",
+      "default_reasoning_level": "medium",
+      "default_verbosity": "low",
+      "description": "OpenCode Go cheap helper. 1M context, medium-effort default, suited for summaries, low-risk edits, cleanup, and bounded support work. Uses OpenCode Go credits.",
+      "display_name": "MiMo-V2.5",
+      "effective_context_window_percent": 95,
+      "input_modalities": [
+        "text"
+      ],
+      "known_failure_modes": [],
+      "max_context_window": 1000000,
+      "policy_role": "cheap_support_worker",
+      "provider": "opencode-go",
+      "provider_credit_source": "opencode-go",
+      "provider_hint": "Uses OpenCode Go credits",
+      "provider_label": "OpenCode Go",
+      "reasoning_summary_format": null,
+      "recommended_for": [
+        "cheap support slices",
+        "classification",
+        "bounded helper tasks",
+        "log triage"
+      ],
+      "recommended_for_summary": "Cheap OpenCode Go helper for summaries, low-risk edits, cleanup, and bounded support tasks.",
+      "role_hint": "cheap-helper-worker",
+      "slug": "mimo-v2.5",
+      "support_verbosity": false,
+      "supported_reasoning_levels": [
+        {
+          "description": "Fastest mode for cheap helper threads, summaries, and routine tasks",
+          "effort": "low"
+        },
+        {
+          "description": "Recommended default when a low-cost worker needs more care on bounded work",
+          "effort": "medium"
+        },
+        {
+          "description": "Stretch mode for tougher bounded tasks, validation, and cleanup without switching models",
+          "effort": "high"
+        },
+        {
+          "description": "Rare stretch mode only; prefer a stronger worker or GPT manager for very hard tasks",
+          "effort": "xhigh"
+        }
+      ],
+      "supports_parallel_tool_calls": true,
+      "supports_reasoning_summaries": false,
+      "supports_search_tool": true,
+      "tool_loop_reliability": "strong",
+      "transport_route": "chat",
+      "usage_tier": "allowed_fallback",
+      "visibility": "list"
+    },
+    {
+      "auto_compact_token_limit": null,
+      "avoid_for": [
+        "manager-owned worker lanes",
+        "implementation fan-out"
+      ],
+      "avoid_for_summary": null,
+      "compatibility_class": null,
+      "compatibility_notes": null,
+      "context_window": 272000,
+      "continuation_reliability": "strong",
+      "cost_class": null,
+      "default_reasoning_level": "medium",
+      "default_verbosity": "low",
+      "description": "Native Codex review-only surface, not a general worker lane.",
+      "display_name": "Codex Auto Review",
+      "effective_context_window_percent": 100,
+      "input_modalities": [
+        "text",
+        "image"
+      ],
+      "known_failure_modes": [],
+      "max_context_window": 1000000,
+      "policy_role": "review_surface",
+      "provider": "openai-quota",
+      "provider_credit_source": "codex-quota",
+      "provider_hint": "Uses included Codex GPT quota",
+      "provider_label": "Codex internal",
+      "reasoning_summary_format": "experimental",
+      "recommended_for": [
+        "native auto-review surfaces",
+        "review-only flows"
+      ],
+      "recommended_for_summary": null,
+      "role_hint": null,
+      "slug": "codex-auto-review",
+      "support_verbosity": true,
+      "supported_reasoning_levels": [
+        {
+          "description": "Fast responses with lighter reasoning",
+          "effort": "low"
+        },
+        {
+          "description": "Balances speed and reasoning depth for everyday tasks",
+          "effort": "medium"
+        },
+        {
+          "description": "Greater reasoning depth for complex problems",
+          "effort": "high"
+        },
+        {
+          "description": "Extra high reasoning depth for complex problems",
+          "effort": "xhigh"
+        }
+      ],
+      "supports_parallel_tool_calls": true,
+      "supports_reasoning_summaries": true,
+      "supports_search_tool": true,
+      "tool_loop_reliability": "strong",
+      "transport_route": "native",
+      "usage_tier": "manager_or_final_review",
+      "visibility": "list"
+    }
+  ]
+}

@@ -1,0 +1,451 @@
+{
+  "metadata": {
+    "cachePluginRoot": "C:\\Users\\SlaVKs\\.codex\\plugins\\cache\\personal\\project-manager",
+    "exportMode": "active_root",
+    "generatedAt": "2026-06-20T19:53:10Z",
+    "generatedFromRoot": "C:\\Users\\SlaVKs\\.codex\\plugins\\local-marketplaces\\personal\\plugins\\project-manager",
+    "liveModelsPath": "C:\\Users\\SlaVKs\\.codex\\models.json",
+    "pluginVersion": "0.3.7+codex.20260620164500",
+    "runtimeSha256": "a18b118738136a47f70990000c4ea1620966219a608725a7d69784ad024a5fb1",
+    "sha256": "a18b118738136a47f70990000c4ea1620966219a608725a7d69784ad024a5fb1",
+    "sourcePluginRoot": "C:\\Users\\SlaVKs\\.codex\\plugins\\local-marketplaces\\personal\\plugins\\project-manager",
+    "testMode": false
+  },
+  "models": {
+    "codex-auto-review": {
+      "aliases": [
+        "auto-review",
+        "codex-auto-review"
+      ],
+      "avoidForSummary": null,
+      "avoidTasks": [
+        "manager-owned worker lanes",
+        "implementation fan-out"
+      ],
+      "compatibilityClass": null,
+      "compatibilityNotes": null,
+      "continuationReliability": "strong",
+      "costClass": null,
+      "disabledReason": null,
+      "displayName": "Codex Auto Review",
+      "enabled": true,
+      "knownFailureModes": [],
+      "policyRole": "review_surface",
+      "provider": "openai-quota",
+      "providerLabel": "Codex internal",
+      "recommendedForSummary": null,
+      "recommendedTasks": [
+        "native auto-review surfaces",
+        "review-only flows"
+      ],
+      "roleHint": null,
+      "runtimeRules": [],
+      "toolLoopReliability": "strong",
+      "transportRoute": "native",
+      "usageTier": "manager_or_final_review"
+    },
+    "deepseek-v4-flash": {
+      "aliases": [
+        "flash",
+        "deepseek-flash",
+        "v4-flash",
+        "deepseek v4 flash",
+        "deepseekv4flash"
+      ],
+      "avoidForSummary": "Avoid final ownership, final review, and broad architecture decisions.",
+      "avoidTasks": [
+        "final approval",
+        "wide architecture design"
+      ],
+      "compatibilityClass": "bridged",
+      "compatibilityNotes": "Bridged through the local Responses/SSE proxy. The proxy maps Codex reasoning selection into worker-behavior instructions while keeping upstream provider thinking disabled for steadier tool use. GPT remains preferable for final ownership.",
+      "continuationReliability": "conditional",
+      "costClass": "cheap",
+      "disabledReason": null,
+      "displayName": "DeepSeek V4 Flash",
+      "enabled": true,
+      "knownFailureModes": [
+        "follow-up tool loops can degrade into raw unparsed tool-call text when transport shape drifts",
+        "tool-loop viability can look healthy on a fresh wrapper smoke while stale loaded sessions remain risky",
+        "comment-only reasoning lines can leak into PowerShell if proxy sanitization regresses"
+      ],
+      "policyRole": "default_implementer",
+      "provider": "opencode-go",
+      "providerLabel": "OpenCode Go",
+      "recommendedForSummary": "Default cheap OpenCode Go worker for bounded implementation, quick fixes, and fan-out execution lanes.",
+      "recommendedTasks": [
+        "fan-out subagent implementation",
+        "small multi-step fix loops",
+        "mechanical refactors",
+        "routine spec review",
+        "routine log analysis"
+      ],
+      "roleHint": "cheap-worker",
+      "runtimeRules": [
+        "immediate-tool-use: when tools are available and the task requires external action, use the tool immediately instead of narrating intentions.",
+        "flash-bounded-loop: keep loops small and deterministic; prefer one concrete read or edit step at a time over broad speculative exploration.",
+        "work-to-completion: if the user asked you to implement, fix, test, or verify something and tools are available, keep working until the requested slice is complete or a real blocker is proven.",
+        "post-read-action: after inspecting files, logs, code, or test output, take the next concrete tool step if work remains; do not stop at diagnosis alone.",
+        "strict-json-tool-args: every function tool call must emit valid JSON arguments that match the callable schema.",
+        "no-simulated-tool-call: never replace a required tool call with an explanation, JSON example, or simulated tool usage.",
+        "no-invented-edit-tools: if apply_patch is not callable, do not invent it.",
+        "no-shell-thinking: never place reasoning, markdown, or comment-prefixed notes inside exec_command payloads.",
+        "stay-in-workspace: stay inside the active workspace and prefer relative paths unless tool output proves an absolute path is required.",
+        "verify-from-source: when asked for exact values or file-derived data, read the file or tool output back before replying.",
+        "exact-output-discipline: when the user or manager requests exact output, emit exactly the requested block and nothing else.",
+        "compaction-is-authoritative: treat compacted context as authoritative state and continue from it directly.",
+        "finish-the-loop: after each tool result, either take the next concrete step or conclude; do not spend a turn restating the plan."
+      ],
+      "toolLoopReliability": "conditional",
+      "transportRoute": "chat",
+      "usageTier": "default_implementation"
+    },
+    "deepseek-v4-pro": {
+      "aliases": [
+        "pro",
+        "deepseek-pro",
+        "v4-pro",
+        "deepseek v4 pro",
+        "deepseekv4pro"
+      ],
+      "avoidForSummary": "Avoid using it for cheap repetitive work where Flash is sufficient.",
+      "avoidTasks": [
+        "cheap bulk work"
+      ],
+      "compatibilityClass": "bridged",
+      "compatibilityNotes": "Bridged through the local Responses/SSE proxy. Best third-party implementation lane here when Flash is not enough.",
+      "continuationReliability": "strong",
+      "costClass": "medium",
+      "disabledReason": null,
+      "displayName": "DeepSeek V4 Pro",
+      "enabled": true,
+      "knownFailureModes": [
+        "transport remains sensitive to stale loaded Codex sessions even when fresh wrapper smoke passes"
+      ],
+      "policyRole": "escalation_implementer",
+      "provider": "opencode-go",
+      "providerLabel": "OpenCode Go",
+      "recommendedForSummary": "Escalation OpenCode Go worker for harder debugging, multi-file fixes, and architecture-sensitive implementation.",
+      "recommendedTasks": [
+        "higher-risk implementation",
+        "multi-file debugging",
+        "architecture-sensitive edits",
+        "fallback from degraded flash"
+      ],
+      "roleHint": "escalation-worker",
+      "runtimeRules": [
+        "immediate-tool-use: when tools are available and the task requires external action, use the tool immediately instead of narrating intentions.",
+        "work-to-completion: if the user asked you to implement, fix, test, or verify something and tools are available, keep working until the requested slice is complete or a real blocker is proven.",
+        "post-read-action: after inspecting files, logs, code, or test output, take the next concrete tool step if work remains; do not stop at diagnosis alone.",
+        "strict-json-tool-args: every function tool call must emit valid JSON arguments that match the callable schema.",
+        "no-simulated-tool-call: never replace a required tool call with an explanation, JSON example, or simulated tool usage.",
+        "no-invented-edit-tools: if apply_patch is not callable, do not invent it.",
+        "no-shell-thinking: never place reasoning, markdown, or comment-prefixed notes inside exec_command payloads.",
+        "stay-in-workspace: stay inside the active workspace and prefer relative paths unless tool output proves an absolute path is required.",
+        "verify-from-source: when asked for exact values or file-derived data, read the file or tool output back before replying.",
+        "exact-output-discipline: when the user or manager requests exact output, emit exactly the requested block and nothing else.",
+        "compaction-is-authoritative: treat compacted context as authoritative state and continue from it directly.",
+        "finish-the-loop: after each tool result, either take the next concrete step or conclude; do not spend a turn restating the plan."
+      ],
+      "toolLoopReliability": "strong",
+      "transportRoute": "chat",
+      "usageTier": "escalation_implementation"
+    },
+    "glm-5.2": {
+      "aliases": [
+        "glm52",
+        "glm 5.2",
+        "glm-5.2"
+      ],
+      "avoidForSummary": "Avoid low-value cheap helper work when a simpler worker would suffice.",
+      "avoidTasks": [
+        "cheap repetitive helper work"
+      ],
+      "compatibilityClass": "bridged",
+      "compatibilityNotes": "Bridged through the local Responses/SSE proxy. Best third-party option for broad repo reading and synthesis before coding.",
+      "continuationReliability": "strong",
+      "costClass": "medium",
+      "disabledReason": null,
+      "displayName": "GLM-5.2",
+      "enabled": true,
+      "knownFailureModes": [],
+      "policyRole": "long_context_synthesizer",
+      "provider": "opencode-go",
+      "providerLabel": "OpenCode Go",
+      "recommendedForSummary": "Long-context OpenCode Go worker for large repo scans, planning, synthesis, and broad context reduction before implementation.",
+      "recommendedTasks": [
+        "large-context scans",
+        "repo synthesis",
+        "architecture mapping",
+        "repo exploration"
+      ],
+      "roleHint": "long-context-worker",
+      "runtimeRules": [
+        "long-context-first: use broad context carefully, then turn reconnaissance into concrete next actions quickly.",
+        "recon-then-act: after a repo scan or synthesis pass, convert the findings into the next concrete tool step when the requested work is still active.",
+        "strict-json-tool-args: every function tool call must emit valid JSON arguments that match the callable schema.",
+        "stay-in-workspace: stay inside the active workspace and prefer relative paths.",
+        "verify-from-source: when asked for exact values or file-derived data, read the file or tool output back before replying.",
+        "exact-output-discipline: obey exact requested output blocks without extra prose.",
+        "no-invented-tools: if a tool is not callable in this turn, do not mention it or try to use it."
+      ],
+      "toolLoopReliability": "strong",
+      "transportRoute": "chat",
+      "usageTier": "allowed_fallback"
+    },
+    "gpt-5.3-codex-spark": {
+      "aliases": [
+        "spark",
+        "gpt53spark",
+        "gpt-5.3-codex-spark"
+      ],
+      "avoidForSummary": "Avoid larger multi-file features or hidden-state debugging.",
+      "avoidTasks": [
+        "multi-file features",
+        "architecture work",
+        "hidden-state debugging"
+      ],
+      "compatibilityClass": "native",
+      "compatibilityNotes": "Native Codex model optimized for speed over depth; keep the scope tight.",
+      "continuationReliability": "strong",
+      "costClass": "quota",
+      "disabledReason": null,
+      "displayName": "GPT-5.3-Codex-Spark",
+      "enabled": true,
+      "knownFailureModes": [],
+      "policyRole": "micro_edit_worker",
+      "provider": "openai-quota",
+      "providerLabel": "Codex GPT quota",
+      "recommendedForSummary": "Native Codex ultra-fast lane for very small edits, quick checks, and short bounded loops.",
+      "recommendedTasks": [
+        "tiny edits",
+        "rename/fix/logging passes",
+        "interactive one-file loops"
+      ],
+      "roleHint": "micro-edit-worker",
+      "runtimeRules": [
+        "micro-scope-only: stay within 1-3 files and avoid architecture-sensitive changes.",
+        "fast-native-iteration: prefer tiny high-confidence edits and quick validation."
+      ],
+      "toolLoopReliability": "strong",
+      "transportRoute": "native",
+      "usageTier": "allowed_fallback"
+    },
+    "gpt-5.4": {
+      "aliases": [
+        "gpt54",
+        "gpt-5.4"
+      ],
+      "avoidForSummary": "Avoid using it for cheap repetitive worker fan-out when a lower-cost worker will do.",
+      "avoidTasks": [
+        "cheap fan-out"
+      ],
+      "compatibilityClass": "native",
+      "compatibilityNotes": "Native Codex model with strong tool-loop and review behavior.",
+      "continuationReliability": "strong",
+      "costClass": "quota",
+      "disabledReason": null,
+      "displayName": "GPT-5.4",
+      "enabled": true,
+      "knownFailureModes": [],
+      "policyRole": "senior_reviewer",
+      "provider": "openai-quota",
+      "providerLabel": "Codex GPT quota",
+      "recommendedForSummary": "Native Codex default generalist for everyday coding, review, and larger multi-step implementation.",
+      "recommendedTasks": [
+        "senior review",
+        "serious native implementation",
+        "behavior regressions",
+        "code quality review"
+      ],
+      "roleHint": "generalist-manager",
+      "runtimeRules": [],
+      "toolLoopReliability": "strong",
+      "transportRoute": "native",
+      "usageTier": "manager_or_final_review"
+    },
+    "gpt-5.4-mini": {
+      "aliases": [
+        "gpt54mini",
+        "gpt-5.4-mini"
+      ],
+      "avoidForSummary": "Avoid final approval or architecture-sensitive ownership.",
+      "avoidTasks": [
+        "architecture-sensitive tasks",
+        "final approval"
+      ],
+      "compatibilityClass": "native",
+      "compatibilityNotes": "Native Codex model with good tool compatibility, but intended for lighter work than GPT-5.4/5.5.",
+      "continuationReliability": "strong",
+      "costClass": "quota",
+      "disabledReason": null,
+      "displayName": "GPT-5.4-Mini",
+      "enabled": true,
+      "knownFailureModes": [],
+      "policyRole": "light_native_worker",
+      "provider": "openai-quota",
+      "providerLabel": "Codex GPT quota",
+      "recommendedForSummary": "Native Codex fast GPT lane for simpler coding tasks, short tool loops, and light worker work.",
+      "recommendedTasks": [
+        "small bug fixes",
+        "small tests",
+        "light native subagent work"
+      ],
+      "roleHint": "light-native-worker",
+      "runtimeRules": [],
+      "toolLoopReliability": "strong",
+      "transportRoute": "native",
+      "usageTier": "allowed_fallback"
+    },
+    "gpt-5.5": {
+      "aliases": [
+        "gpt55",
+        "gpt-5.5"
+      ],
+      "avoidForSummary": "Avoid using it as a cheap bulk worker lane when a lower-cost worker is sufficient.",
+      "avoidTasks": [
+        "bulk worker fan-out",
+        "cheap repetitive scans"
+      ],
+      "compatibilityClass": "native",
+      "compatibilityNotes": "Native Codex model with the strongest expected tool and thread parity.",
+      "continuationReliability": "strong",
+      "costClass": "quota",
+      "disabledReason": null,
+      "displayName": "GPT-5.5",
+      "enabled": true,
+      "knownFailureModes": [],
+      "policyRole": "root_manager",
+      "provider": "openai-quota",
+      "providerLabel": "Codex GPT quota",
+      "recommendedForSummary": "Native Codex frontier manager/generalist for root-cause analysis, architecture decisions, and final review.",
+      "recommendedTasks": [
+        "root-cause analysis",
+        "architecture decisions",
+        "conflict resolution",
+        "final gate"
+      ],
+      "roleHint": "root-manager",
+      "runtimeRules": [],
+      "toolLoopReliability": "strong",
+      "transportRoute": "native",
+      "usageTier": "manager_or_final_review"
+    },
+    "kimi-k2.7-code": {
+      "aliases": [
+        "kimi-k2-7-code",
+        "kimi k2.7 code",
+        "k2.7-code",
+        "k2.7 code"
+      ],
+      "avoidForSummary": "Avoid cheap bulk scan work where GLM or MiMo is a better fit.",
+      "avoidTasks": [
+        "cheap bulk scans"
+      ],
+      "compatibilityClass": "bridged",
+      "compatibilityNotes": "Bridged through the local Responses/SSE proxy. Good second-pass coder when you want an independent implementation voice.",
+      "continuationReliability": "strong",
+      "costClass": "medium",
+      "disabledReason": null,
+      "displayName": "Kimi K2.7 Code",
+      "enabled": true,
+      "knownFailureModes": [],
+      "policyRole": "rival_coder",
+      "provider": "opencode-go",
+      "providerLabel": "OpenCode Go",
+      "recommendedForSummary": "Coding-specialist OpenCode Go worker for direct edits, debugging, tests, and second-pass implementation.",
+      "recommendedTasks": [
+        "independent second implementation",
+        "adversarial debugging pass",
+        "code-heavy implementation"
+      ],
+      "roleHint": "coding-specialist-worker",
+      "runtimeRules": [
+        "fast-inspect-patch-verify: prefer compact inspect-patch-verify loops.",
+        "work-to-completion: if the user asked for implementation or a fix, keep iterating through inspect-patch-verify until the bounded slice is actually done or a blocker is proven.",
+        "strict-json-tool-args: every function tool call must emit valid JSON arguments that match the callable schema.",
+        "no-commentary-turns: avoid commentary-only turns between tool results.",
+        "no-shell-thinking: never place reasoning, markdown, or comment-prefixed notes inside exec_command payloads.",
+        "verify-from-source: when asked for exact values or file-derived data, read the file or tool output back before replying.",
+        "no-invented-patch-tools: if apply_patch is not callable, use the available edit surface instead."
+      ],
+      "toolLoopReliability": "strong",
+      "transportRoute": "chat",
+      "usageTier": "allowed_fallback"
+    },
+    "mimo-v2.5": {
+      "aliases": [
+        "mimo-v25",
+        "mimo-v2_5",
+        "mimo v2.5",
+        "mimo 2.5"
+      ],
+      "avoidForSummary": "Avoid serious architecture decisions or final review ownership.",
+      "avoidTasks": [
+        "serious architecture or final review"
+      ],
+      "compatibilityClass": "bridged",
+      "compatibilityNotes": "Bridged through the local Responses/SSE proxy. Best used for tightly bounded helper work rather than broad ownership.",
+      "continuationReliability": "strong",
+      "costClass": "cheap",
+      "disabledReason": null,
+      "displayName": "MiMo-V2.5",
+      "enabled": true,
+      "knownFailureModes": [],
+      "policyRole": "cheap_support_worker",
+      "provider": "opencode-go",
+      "providerLabel": "OpenCode Go",
+      "recommendedForSummary": "Cheap OpenCode Go helper for summaries, low-risk edits, cleanup, and bounded support tasks.",
+      "recommendedTasks": [
+        "cheap support slices",
+        "classification",
+        "bounded helper tasks",
+        "log triage"
+      ],
+      "roleHint": "cheap-helper-worker",
+      "runtimeRules": [
+        "bounded-cheap-slice: complete one cheap useful slice and hand off rather than broadening scope.",
+        "one-complete-slice: prefer one finished bounded action with verification over a partial diagnosis plus suggested next steps.",
+        "strict-json-tool-args: every function tool call must emit valid JSON arguments that match the callable schema.",
+        "stay-tight: stay tightly bounded and avoid broad scans when a narrow check can answer the question.",
+        "verify-from-source: when asked for exact values or file-derived data, read the file or tool output back before replying.",
+        "exact-output-discipline: obey exact requested output blocks without extra prose."
+      ],
+      "toolLoopReliability": "strong",
+      "transportRoute": "chat",
+      "usageTier": "allowed_fallback"
+    },
+    "qwen3.7-plus": {
+      "aliases": [
+        "qwen",
+        "qwen3.7 plus",
+        "qwen3.7-plus"
+      ],
+      "avoidForSummary": null,
+      "avoidTasks": [
+        "all autonomous worker routing"
+      ],
+      "compatibilityClass": null,
+      "compatibilityNotes": null,
+      "continuationReliability": "disabled",
+      "costClass": null,
+      "disabledReason": "Hard-disabled in the project-manager plugin. Use deepseek-v4-flash as the cheap worker and deepseek-v4-pro for harder slices until Qwen transport/reliability is proven.",
+      "displayName": "Qwen3.7 Plus",
+      "enabled": false,
+      "knownFailureModes": [
+        "disabled due to continuation reliability and routing policy",
+        "messages-route model family is not currently approved for autonomous manager worker lanes"
+      ],
+      "policyRole": "disabled",
+      "provider": "opencode-go",
+      "providerLabel": "OpenCode Go",
+      "recommendedForSummary": null,
+      "recommendedTasks": [],
+      "roleHint": null,
+      "runtimeRules": [],
+      "toolLoopReliability": "disabled",
+      "transportRoute": "messages",
+      "usageTier": "disabled"
+    }
+  }
+}
