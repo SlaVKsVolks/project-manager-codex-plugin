@@ -1,0 +1,253 @@
+{
+  "capabilities": [
+    {
+      "id": "health-gates",
+      "label": "Health & stability",
+      "summary": "Classifies environment readiness, coordination gates, stability, and the evidence needed before dispatch.",
+      "signal": "Healthy only when the gate, heartbeat, and stability evidence agree.",
+      "evidenceCeiling": "Repository and generated health surfaces; not proof of authenticated host or production health.",
+      "sourcePatterns": [
+        "README.md",
+        "DEVELOPMENT_IMPROVEMENTS.md",
+        "docs/bugs/*health*.md",
+        "docs/bugs/*stability*.md",
+        "docs/bugs/*classifier*.md"
+      ]
+    },
+    {
+      "id": "lane-coordination",
+      "label": "Dispatch & lane coordination",
+      "summary": "Keeps manager, worker, and project lanes bounded with explicit packets, ownership, and coordination checks.",
+      "signal": "Every action has a lane, a scope, a readiness check, and a readable handoff.",
+      "evidenceCeiling": "Source contracts and local coordination reports; not proof that an external worker completed a live action.",
+      "sourcePatterns": [
+        "README.md",
+        "skills/project-manager/SKILL.md",
+        "docs/bugs/*dispatch*.md",
+        "docs/bugs/*wrapper*.md",
+        "docs/decisions/*coordination*.md"
+      ]
+    },
+    {
+      "id": "recovery-rebind",
+      "label": "Recovery & rebind",
+      "summary": "Plans fail-closed recovery for crash, loaded-turn, stale-binding, and no-restart repair boundaries.",
+      "signal": "Recovery is prepared, verified, and read back before it is treated as complete.",
+      "evidenceCeiling": "Recovery plans and local repair evidence; not permission to restart or mutate production services.",
+      "sourcePatterns": [
+        "docs/bugs/*crash*.md",
+        "docs/bugs/*restart*.md",
+        "docs/bugs/*rebind*.md",
+        "docs/bugs/*loaded*.md",
+        "docs/migration/*.md"
+      ]
+    },
+    {
+      "id": "model-transport",
+      "label": "Model policy & transport",
+      "summary": "Makes model routing, proxy exports, transport readiness, and escalation reasons inspectable.",
+      "signal": "Transport and policy are separate gates; cache presence is not loaded-tool proof.",
+      "evidenceCeiling": "Model catalogs, policy decisions, and local transport checks; not provider-side availability or quota proof.",
+      "sourcePatterns": [
+        "generated/*model*.json",
+        "docs/decisions/*model*.md",
+        "docs/bugs/*model*.md",
+        "docs/bugs/*transport*.md"
+      ]
+    },
+    {
+      "id": "objective-runner",
+      "label": "Objective Runner",
+      "summary": "Turns long-running objectives into durable, verifiable, and recoverable execution state.",
+      "signal": "Objectives have contracts, state, verification, and explicit stop conditions.",
+      "evidenceCeiling": "Local runner contracts and canary evidence; not a claim that unattended host work is safe in every environment.",
+      "sourcePatterns": [
+        "docs/decisions/*objective*.md",
+        "docs/superpowers/plans/*objective*.md",
+        "docs/superpowers/specs/*objective*.md",
+        "README.md"
+      ]
+    },
+    {
+      "id": "release-install",
+      "label": "Release, install & rollback",
+      "summary": "Checks generated exports, release artifacts, install repair paths, and rollback evidence before handoff.",
+      "signal": "Artifact, source, runtime, authenticated, and publication evidence stay separate.",
+      "evidenceCeiling": "Local artifact and release checks; not public deployment or cutover acceptance.",
+      "sourcePatterns": [
+        "README.md",
+        "DEVELOPMENT_IMPROVEMENTS.md",
+        "docs/bugs/*release*.md",
+        "docs/migration/*.md",
+        "docs/decisions/*release*.md"
+      ]
+    },
+    {
+      "id": "cross-project-audit",
+      "label": "Cross-project dashboards",
+      "summary": "Summarizes readiness, reliability, operational audits, and next-best actions across project lanes.",
+      "signal": "A dashboard is a decision surface backed by source-linked evidence, not a decorative status wall.",
+      "evidenceCeiling": "Local reports and source-linked summaries; not proof of external project health without current probes.",
+      "sourcePatterns": [
+        "README.md",
+        "DEVELOPMENT_IMPROVEMENTS.md",
+        "docs/decisions/*dashboard*.md",
+        "docs/superpowers/specs/*dashboard*.md"
+      ]
+    }
+  ],
+  "roadmap": [
+    {
+      "id": "foundation-v03",
+      "phase": "Foundation · v0.3.x",
+      "dateFrom": "2026-06-21",
+      "dateTo": "2026-07-01",
+      "status": "complete",
+      "title": "Make manager coordination durable",
+      "outcome": "Established the manager-thread workflow, project records, generated exports, release checks, and bounded dispatch surfaces.",
+      "criteria": [
+        "Manager and worker responsibilities are explicit.",
+        "Generated models and wrapper surfaces are checked before handoff.",
+        "Project evidence is durable outside the chat transcript."
+      ],
+      "evidenceCeiling": "Repository implementation and local verification.",
+      "sourcePatterns": [
+        "README.md",
+        "DEVELOPMENT_IMPROVEMENTS.md",
+        "docs/superpowers/plans/*.md"
+      ]
+    },
+    {
+      "id": "gates-july",
+      "phase": "Gate hardening · July 2026",
+      "dateFrom": "2026-07-02",
+      "dateTo": "2026-07-02",
+      "status": "complete",
+      "title": "Fail closed around wrapper and transport ambiguity",
+      "outcome": "Separated source, package, loaded-binding, model, and coordination evidence so a green local check cannot overclaim runtime health.",
+      "criteria": [
+        "Readiness is blocked when required evidence is missing.",
+        "Model escalation has a concrete reason.",
+        "Stale or repeated delivery is observable."
+      ],
+      "evidenceCeiling": "Bug records, decisions, and local checks; no provider-side guarantee.",
+      "sourcePatterns": [
+        "docs/bugs/2026-07-02-*.md",
+        "docs/decisions/*.md"
+      ]
+    },
+    {
+      "id": "recovery-july",
+      "phase": "Recovery boundaries · July 2026",
+      "dateFrom": "2026-07-03",
+      "dateTo": "2026-07-31",
+      "status": "complete",
+      "title": "Recover without hiding the loaded-turn boundary",
+      "outcome": "Added crash recovery, rebind risk, no-restart repair, and explicit separation between a prepared rescue and a proven live binding.",
+      "criteria": [
+        "Recovery actions have read-back evidence.",
+        "Loaded-turn failure remains visible instead of being masked by package health.",
+        "Production mutation remains outside the default lane."
+      ],
+      "evidenceCeiling": "Local recovery reports and source history; not production acceptance.",
+      "sourcePatterns": [
+        "docs/bugs/*crash*.md",
+        "docs/bugs/*restart*.md",
+        "docs/bugs/*rebind*.md",
+        "docs/migration/*.md"
+      ]
+    },
+    {
+      "id": "objective-runner-august",
+      "phase": "Execution durability · August 2026",
+      "dateFrom": "2026-08-05",
+      "dateTo": "2026-08-05",
+      "status": "complete",
+      "title": "Turn objectives into verifiable state",
+      "outcome": "Introduced the global supervisor direction, Objective Runner contracts, canaries, and no-restart hot-repair workflow.",
+      "criteria": [
+        "Objectives have durable state and verification paths.",
+        "Canaries fail closed when transport or host binding is unsafe.",
+        "Hot repair does not discard queued work."
+      ],
+      "evidenceCeiling": "Local runner and canary evidence.",
+      "sourcePatterns": [
+        "docs/decisions/2026-08-05-*.md",
+        "docs/bugs/2026-08-05-*.md",
+        "docs/superpowers/plans/*objective*.md",
+        "docs/superpowers/specs/*objective*.md"
+      ]
+    },
+    {
+      "id": "canonical-health-august",
+      "phase": "Canonical source & health truth · August 2026",
+      "dateFrom": "2026-08-06",
+      "dateTo": "2026-08-07",
+      "status": "in-progress",
+      "title": "Make health classifications agree with the actual source",
+      "outcome": "Aligns canonical source migration, crash classification, app-server filesystem-watch failures, and manager health reporting.",
+      "criteria": [
+        "Canonical source and generated outputs agree.",
+        "A false unhealthy regression is distinguishable from a real failure.",
+        "The operator can see what is known, stale, or blocked."
+      ],
+      "evidenceCeiling": "Current repository and local-session evidence; runtime/public claims remain gated.",
+      "sourcePatterns": [
+        "docs/bugs/2026-08-06-*.md",
+        "docs/bugs/2026-08-07-*.md",
+        "docs/migration/2026-08-07-*.md",
+        "DEVELOPMENT_IMPROVEMENTS.md"
+      ]
+    },
+    {
+      "id": "hosted-roadmap-surface",
+      "phase": "Next · Hosted operator surface",
+      "dateFrom": "2026-08-08",
+      "dateTo": null,
+      "status": "next",
+      "title": "Give the project a live, source-backed front door",
+      "outcome": "Publish the hybrid roadmap/docs surface, add richer live executor and rollout evidence when those runtimes exist, and keep local sync visible.",
+      "criteria": [
+        "Local changes can regenerate the bundled snapshot.",
+        "Remote refresh is validated and falls back safely.",
+        "Every capability and roadmap claim links to its source."
+      ],
+      "evidenceCeiling": "Hosted documentation surface; not a live Codex host monitor.",
+      "sourcePatterns": [
+        "README.md",
+        "DEVELOPMENT_IMPROVEMENTS.md",
+        "docs/superpowers/specs/2026-08-07-project-manager-roadmap-site-design.md"
+      ]
+    }
+  ],
+  "comparison": {
+    "withPlugin": {
+      "label": "With Project Manager",
+      "summary": "A bounded, evidence-aware flow that leaves a readable trail.",
+      "steps": [
+        "Health gate",
+        "Lane packet",
+        "Model and transport check",
+        "Prepared action",
+        "Host execution and read-back",
+        "Ledger or registry finalization"
+      ]
+    },
+    "withoutPlugin": {
+      "label": "Without the plugin",
+      "summary": "A manual flow where delivery, ownership, and final state can become ambiguous.",
+      "steps": [
+        "Manual prompt",
+        "Ambiguous delivery",
+        "No durable lane ownership",
+        "Stale or repeated retries",
+        "Unclear final state"
+      ]
+    },
+    "limitations": [
+      "The plugin cannot resurrect an already-loaded broken MCP binding.",
+      "Source/package health is not proof of host, authenticated, device, public, or production health.",
+      "A hosted snapshot is not a live monitor of the local Windows machine."
+    ]
+  }
+}
