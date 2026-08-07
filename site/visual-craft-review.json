@@ -1,0 +1,307 @@
+{
+  "schema": "ui-ux-visual-craft-review-v1",
+  "product": "Project Manager roadmap",
+  "primary_task": "Understand Project Manager health now",
+  "primary_action": "Review environment health",
+  "recipe": "data-view",
+  "target_score": 95,
+  "max_iterations": 5,
+  "quality_95_policy": {
+    "schema": "ui-ux-quality-95-policy-v1",
+    "target_score": 95,
+    "dimension_floor": 9,
+    "max_iterations": 5,
+    "required_contexts": [
+      "compact-light",
+      "compact-dark",
+      "wide-light",
+      "wide-dark"
+    ],
+    "required_states": [
+      "ready",
+      "hover",
+      "focus-visible",
+      "pressed",
+      "pending",
+      "success",
+      "error",
+      "recovery"
+    ],
+    "required_checks": [
+      "text_contrast",
+      "non_text_contrast",
+      "task_action_visual_priority",
+      "primary_action_unobscured",
+      "transient_layers_non_colliding",
+      "focus_indicator_single_layer",
+      "secondary_region_subordinate",
+      "horizontal_overflow_absent",
+      "typography_readability",
+      "font_delivery",
+      "color_role_completeness",
+      "non_color_status_cues",
+      "target_geometry",
+      "motion_first_frame"
+    ],
+    "required_code_gates": [
+      "format",
+      "lint",
+      "compile",
+      "test",
+      "build"
+    ],
+    "reviewer_quorum": 3,
+    "minimum_reviewer_score": 90,
+    "minimum_median_score": 95
+  },
+  "status": "planned",
+  "rubric": [
+    {
+      "id": "task_clarity_primary_action",
+      "name": "Task clarity and primary action",
+      "weight": 15,
+      "floor": 8
+    },
+    {
+      "id": "hierarchy_composition",
+      "name": "Hierarchy and composition",
+      "weight": 15,
+      "floor": 8
+    },
+    {
+      "id": "visual_coherence_specificity",
+      "name": "Visual coherence and specificity",
+      "weight": 15,
+      "floor": 8
+    },
+    {
+      "id": "interaction_state_craft",
+      "name": "Interaction and state craft",
+      "weight": 15,
+      "floor": 8
+    },
+    {
+      "id": "responsive_adaptive_behavior",
+      "name": "Responsive and adaptive behavior",
+      "weight": 15,
+      "floor": 8
+    },
+    {
+      "id": "content_quality_recovery",
+      "name": "Content quality and recovery",
+      "weight": 10,
+      "floor": 8
+    },
+    {
+      "id": "accessibility_fundamentals",
+      "name": "Accessibility fundamentals",
+      "weight": 10,
+      "floor": 8
+    },
+    {
+      "id": "evidence_honesty",
+      "name": "Evidence honesty",
+      "weight": 5,
+      "floor": 8
+    }
+  ],
+  "iterations": [],
+  "claim_ceiling": "source",
+  "compact_action_policy": {
+    "risk": "low",
+    "strategy": "direct-action",
+    "entry_selector": "[data-uiux-id='primary-action']",
+    "final_action_selector": "[data-uiux-id='primary-action']"
+  },
+  "handoff_policy": {
+    "validator_flag": "--release-strict",
+    "quality_validator_flag": "--quality-95-strict",
+    "measurement_schema": "ui-ux-handoff-browser-measurement-v1",
+    "review_response_schema": "ui-ux-handoff-review-response-v1",
+    "attestation_schema": "ui-ux-detached-attestation-v1",
+    "trust_store_schema": "ui-ux-attestation-trust-store-v1",
+    "code_quality_evidence_schema": "ui-ux-code-quality-evidence-v1",
+    "required_code_quality_gates": [
+      "format",
+      "lint",
+      "compile",
+      "test",
+      "build"
+    ],
+    "identity_policy": "The independent reviewer name and run_id must differ from the implementer run_id.",
+    "evidence_policy": "Every observation must bind to the hashed browser measurement or an annotated screenshot region.",
+    "attestation_policy": "Release strict uses distinct capture and reviewer signing keys in the installed plugin-pinned trust store; an implementation agent must not create or override the trust root.",
+    "required_contexts": [
+      {
+        "id": "compact",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        }
+      },
+      {
+        "id": "wide",
+        "viewport": {
+          "width": 1440,
+          "height": 1024
+        }
+      }
+    ],
+    "reviewer_kinds": [
+      "independent-agent",
+      "human-reviewer",
+      "user"
+    ],
+    "required_observations": [
+      "task_identity_in_first_viewport",
+      "primary_or_guided_action_in_first_viewport",
+      "horizontal_overflow_absent",
+      "action_ownership_unambiguous",
+      "responsive_navigation_usable",
+      "advanced_inputs_progressively_disclosed",
+      "critical_state_affordances_clear",
+      "critical_decision_values_fully_visible",
+      "decision_copy_boundaries_clear",
+      "status_receipt_nonduplicative",
+      "terminal_copy_single_source"
+    ]
+  },
+  "intervention_decision": {
+    "mode": "reframe",
+    "baseline_structural_findings": [
+      {
+        "id": "health-state-absent",
+        "category": "information-architecture",
+        "observation": "Compact and wide baselines lead with capability promotion while the generated environment-health state has no visible route region."
+      },
+      {
+        "id": "health-evidence-model-missing",
+        "category": "content-model",
+        "observation": "The baseline does not expose freshness, coordination gate, heartbeat readiness, stability totals, finding codes, or the loaded-turn evidence boundary."
+      },
+      {
+        "id": "primary-action-misses-health-task",
+        "category": "action-ownership",
+        "observation": "The first primary action explores the roadmap instead of taking the operator to the environment-health evidence required by the declared task."
+      }
+    ],
+    "selected_scopes": [
+      "information-architecture",
+      "content-model",
+      "action-ownership",
+      "visual-system"
+    ],
+    "rationale": "Reframe the first scan around current health, freshness, and evidence limits; give the health section one direct navigation action before retaining the roadmap and documentation as supporting context."
+  },
+  "intervention_trace": {
+    "schema": "ui-ux-intervention-trace-v1",
+    "decision_sha256": "c8587d8ad2fda9f23632636b6922208c41d9e541eac4ea97340eef1a9c59b5ce",
+    "resolutions": [
+      {
+        "finding_id": "health-state-absent",
+        "category": "information-architecture",
+        "route_path": "/",
+        "status": "planned",
+        "implementation_changes": [
+          {
+            "kind": "information-architecture",
+            "source_path": "site/src/App.jsx",
+            "source_sha256": "b3f44adc2ba3e5b81ab403f454ee771028bee3ce9c5199bb5874af7753eae42b",
+            "selector": "[data-uiux-id=\"environment-health\"]",
+            "description": "Place a dedicated environment-health section directly after the task-led overview and before capability promotion."
+          }
+        ],
+        "postconditions": [
+          {
+            "id": "health-region-before-capabilities",
+            "context": "all",
+            "assertion": {
+              "kind": "before",
+              "selector": "[data-uiux-id=\"environment-health\"]",
+              "other_selector": "[data-uiux-id=\"capabilities\"]"
+            },
+            "evidence_case_ids": [
+              "roadmap:compact-light-ready",
+              "roadmap:wide-light-ready"
+            ]
+          }
+        ]
+      },
+      {
+        "finding_id": "health-evidence-model-missing",
+        "category": "content-model",
+        "route_path": "/",
+        "status": "planned",
+        "implementation_changes": [
+          {
+            "kind": "content-model",
+            "source_path": "site/src/App.jsx",
+            "source_sha256": "b3f44adc2ba3e5b81ab403f454ee771028bee3ce9c5199bb5874af7753eae42b",
+            "selector": "[data-uiux-id=\"health-evidence-grid\"]",
+            "description": "Bind the validated snapshot classification, freshness, gate, heartbeat, stability totals, finding codes, and evidence boundary into semantic status and definition elements."
+          }
+        ],
+        "postconditions": [
+          {
+            "id": "one-health-evidence-grid",
+            "context": "all",
+            "assertion": {
+              "kind": "count",
+              "selector": "[data-uiux-id=\"health-evidence-grid\"]",
+              "expected_count": 1
+            },
+            "evidence_case_ids": [
+              "roadmap:compact-light-ready",
+              "roadmap:wide-light-ready"
+            ]
+          }
+        ]
+      },
+      {
+        "finding_id": "primary-action-misses-health-task",
+        "category": "action-ownership",
+        "route_path": "/",
+        "status": "planned",
+        "implementation_changes": [
+          {
+            "kind": "action-ownership",
+            "source_path": "site/src/App.jsx",
+            "source_sha256": "b3f44adc2ba3e5b81ab403f454ee771028bee3ce9c5199bb5874af7753eae42b",
+            "selector": "[data-uiux-id=\"primary-action\"]",
+            "description": "Replace roadmap exploration as the first primary action with one direct link to the environment-health evidence."
+          }
+        ],
+        "postconditions": [
+          {
+            "id": "one-health-primary-action",
+            "context": "all",
+            "assertion": {
+              "kind": "count",
+              "selector": "[data-uiux-id=\"primary-action\"]",
+              "expected_count": 1
+            },
+            "evidence_case_ids": [
+              "roadmap:compact-light-ready",
+              "roadmap:wide-light-ready"
+            ]
+          },
+          {
+            "id": "health-action-in-compact-viewport",
+            "context": "compact",
+            "assertion": {
+              "kind": "in-viewport",
+              "selector": "[data-uiux-id=\"primary-action\"]"
+            },
+            "evidence_case_ids": [
+              "roadmap:compact-light-ready"
+            ]
+          }
+        ]
+      }
+    ],
+    "evidence": {
+      "browser_results_path": null,
+      "browser_results_sha256": null
+    }
+  }
+}

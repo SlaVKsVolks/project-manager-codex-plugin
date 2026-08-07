@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import baselineDataset from './data/project-manager.json';
+import healthSnapshot from './data/project-manager-health.json';
 import { REMOTE_DATA_URL } from './lib/config.js';
+import { classifyHealthSnapshot } from './lib/health.js';
 import { renderMarkdown } from './lib/markdown.js';
 import { refreshDataset } from './lib/sync.js';
 
@@ -13,6 +15,7 @@ const STATUS_LABELS = {
 };
 
 const NAV_ITEMS = [
+  ['health', 'Health'],
   ['capabilities', 'Capabilities'],
   ['comparison', 'With / without'],
   ['roadmap', 'Roadmap'],
@@ -32,6 +35,29 @@ function formatDateTime(value) {
 function formatRevision(value) {
   if (!value || value === 'unknown') return 'unknown';
   return value.slice(0, 8);
+}
+
+function formatSignal(value) {
+  if (value === true) return 'Ready';
+  if (value === false) return 'Blocked';
+  if (!value) return 'Unknown';
+  return String(value).replaceAll('_', ' ').replace(/\b\w/g, (character) => character.toUpperCase());
+}
+
+function formatSnapshotAge(classification) {
+  if (classification.ageMinutes === null) return 'No valid snapshot';
+  if (classification.ageMinutes === 0) return 'Less than one minute old';
+  return `${classification.ageMinutes} min old`;
+}
+
+function healthHeadline(classification) {
+  return {
+    HEALTHY: 'Ready for bounded coordination.',
+    DEGRADED: 'Coordination needs attention.',
+    UNHEALTHY: 'Coordination is blocked.',
+    STALE: 'The health snapshot needs refresh.',
+    UNAVAILABLE: 'Health evidence is unavailable.',
+  }[classification.label];
 }
 
 function Icon({ name, size = 16 }) {
@@ -58,6 +84,20 @@ function StatusMark({ status, compact = false }) {
       <span>{meta.label}</span>
     </span>
   );
+}
+
+function HealthStatusMark({ classification, compact = false }) {
+  return (
+    <span className={`health-status health-status--${classification.tone} ${compact ? 'health-status--compact' : ''}`}>
+      <Icon name="dot" size={14} />
+      <span>{classification.label}</span>
+    </span>
+  );
+}
+
+function FindingCodes({ codes = [], emptyLabel }) {
+  if (!codes.length) return <span className="finding-empty">{emptyLabel}</span>;
+  return <ul className="finding-codes">{codes.map((code) => <li key={code}><code>{code}</code></li>)}</ul>;
 }
 
 function SourceLinks({ ids = [], documentById, onSelect }) {
@@ -88,6 +128,7 @@ function App() {
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [evidenceFilter, setEvidenceFilter] = useState('all');
   const [selectedDocumentId, setSelectedDocumentId] = useState(baselineDataset.documents[0]?.id ?? null);
+  const [healthClock, setHealthClock] = useState(() => Date.now());
 
   const documentById = useMemo(
     () => new Map(dataset.documents.map((document) => [document.id, document])),
@@ -111,6 +152,11 @@ function App() {
 
   const selectedDocument = documentById.get(selectedDocumentId) || filteredDocuments[0] || dataset.documents[0];
   const statusMeta = STATUS_LABELS[syncState.status] || STATUS_LABELS['local-snapshot'];
+  const healthState = useMemo(
+    () => classifyHealthSnapshot(healthSnapshot, healthClock),
+    [healthClock],
+  );
+  const health = healthState.snapshot;
 
   useEffect(() => {
     let cancelled = false;
@@ -121,6 +167,11 @@ function App() {
       setSyncState(result);
     });
     return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setHealthClock(Date.now()), 60_000);
+    return () => window.clearInterval(timer);
   }, []);
 
   useEffect(() => {
@@ -169,37 +220,84 @@ function App() {
       <main>
         <section className="hero-section section-anchor" id="overview">
           <div className="hero-copy">
-            <h1 data-uiux-id="task-heading">See what Project Manager can do</h1>
-            <p className="hero-lede">A source-backed coordination layer for Codex work: health gates, bounded lanes, recovery plans, model policy, durable objectives, and release evidence in one readable operating picture.</p>
+            <h1 data-uiux-id="task-heading">Review Project Manager health</h1>
+            <p className="hero-kicker">See what Project Manager can do</p>
+            <p className="hero-lede">Health, coordination, heartbeat, and stability evidence must agree before Codex work is treated as safe. This view shows what blocks the next move when they do not.</p>
             <div className="hero-actions">
-              <a className="primary-action" href="#roadmap">Explore the roadmap <Icon name="arrow" size={16} /></a>
-              <a className="secondary-action" href="#docs">Read the docs <Icon name="arrow" size={16} /></a>
+              <a className="primary-action" data-uiux-id="primary-action" data-uiux-action-entry="direct-action" href="#health">Review environment health <Icon name="arrow" size={16} /></a>
+              <a className="secondary-action" href="#roadmap">Explore the roadmap <Icon name="arrow" size={16} /></a>
             </div>
             <div className="hero-facts" aria-label="Snapshot facts">
-              <div><strong>{dataset.generated.documentCount}</strong><span>documents indexed</span></div>
-              <div><strong>{dataset.capabilities.length}</strong><span>capability families</span></div>
-              <div><strong>{dataset.roadmap.length}</strong><span>roadmap phases</span></div>
+              <div><strong>{healthState.label}</strong><span>environment</span></div>
+              <div><strong>{health?.stability.invariantCount ?? '—'}</strong><span>stability checks</span></div>
+              <div><strong>{formatSnapshotAge(healthState)}</strong><span>snapshot age</span></div>
             </div>
           </div>
           <div className="hero-console" aria-label="Project Manager operating picture">
-            <div className="console-topline"><span>PROJECT MANAGER / OPS VIEW</span><StatusMark status={syncState.status} compact /></div>
-            <div className="console-title">A readable trail from intent to proof.</div>
+            <div className="console-topline"><span>PROJECT MANAGER / HEALTH VIEW</span><HealthStatusMark classification={healthState} compact /></div>
+            <div className="console-title">{healthHeadline(healthState)}</div>
             <div className="console-flow">
-              {['Health gate', 'Lane packet', 'Prepared action', 'Read-back'].map((step, index) => (
-                <div className="console-step" key={step}>
-                  <span className={`console-step-index ${index === 3 ? 'console-step-index--done' : ''}`}>{index === 3 ? <Icon name="check" size={15} /> : `0${index + 1}`}</span>
-                  <span>{step}</span>
-                </div>
-              ))}
+              <div className="console-step"><span className="console-step-index">01</span><span>Gate · {formatSignal(health?.environment.coordinationGate)}</span></div>
+              <div className="console-step"><span className="console-step-index">02</span><span>Heartbeat · {formatSignal(health?.environment.heartbeatReady)}</span></div>
+              <div className="console-step"><span className="console-step-index">03</span><span>Stability · {formatSignal(health?.stability.status)}</span></div>
+              <div className="console-step"><span className="console-step-index">04</span><span>Loaded turn · {formatSignal(health?.environment.sameLoadedTurnCallability)}</span></div>
             </div>
-            <div className="console-note"><span className="signal-line" /><span>{statusMeta.description}</span></div>
-            <div className="console-footer"><span>LOCAL REVISION</span><strong>{formatRevision(dataset.source.revision)}</strong><span>SYNCED</span><strong>{formatDateTime(dataset.generatedAt)}</strong></div>
+            <div className="console-note"><span className="signal-line" /><span>{health?.evidenceBoundary || 'No valid health evidence is available.'}</span></div>
+            <div className="console-footer"><span>PLUGIN</span><strong>{health?.environment.pluginVersion || 'unknown'}</strong><span>CAPTURED</span><strong>{formatDateTime(health?.generatedAt)}</strong></div>
           </div>
         </section>
 
-        <section className="content-section section-anchor" id="capabilities">
+        <section className={`content-section health-section health-section--${healthState.tone} section-anchor`} id="health" data-uiux-id="environment-health" aria-labelledby="environment-health-heading">
+          <div className="health-layout">
+            <div className="health-primary">
+              <p className="section-index">01 / ENVIRONMENT HEALTH</p>
+              <div className="health-title-row">
+                <div>
+                  <h2 id="environment-health-heading">Can Codex coordinate safely?</h2>
+                  <p>{healthState.explanation}</p>
+                </div>
+                <div className="health-state-summary" role="status" aria-live="polite">
+                  <HealthStatusMark classification={healthState} />
+                  {health?.generatedAt
+                    ? <time dateTime={health.generatedAt}>{formatSnapshotAge(healthState)} · ceiling {healthState.maxAgeMinutes} min</time>
+                    : <span>No valid capture time</span>}
+                </div>
+              </div>
+
+              {health ? <>
+                <dl className="health-evidence-grid" data-uiux-id="health-evidence-grid">
+                  <div><dt>Environment</dt><dd>{formatSignal(health.environment.overallStatus)}</dd></div>
+                  <div><dt>Coordination gate</dt><dd>{formatSignal(health.environment.coordinationGate)}</dd></div>
+                  <div><dt>Heartbeat</dt><dd>{formatSignal(health.environment.heartbeatReady)}</dd></div>
+                  <div><dt>Automation safety</dt><dd>{formatSignal(health.stability.safeForManagerAutomation)}</dd></div>
+                  <div><dt>Fresh thread</dt><dd>{formatSignal(health.environment.freshThreadCallability)}</dd></div>
+                  <div><dt>Current loaded turn</dt><dd>{formatSignal(health.environment.sameLoadedTurnCallability)}</dd></div>
+                  <div><dt>Stability invariants</dt><dd>{health.stability.invariantCount - health.stability.failedInvariantCount} / {health.stability.invariantCount} passing</dd></div>
+                  <div><dt>Source revision</dt><dd>{formatRevision(health.source.revision)}{health.source.dirty ? ' · local changes' : ' · clean'}</dd></div>
+                </dl>
+
+                <div className="health-findings">
+                  <div><span className="signal-kicker">BLOCKING FINDINGS</span><FindingCodes codes={health.environment.blockingFindingCodes} emptyLabel="None reported" /></div>
+                  <div><span className="signal-kicker">ADVISORIES</span><FindingCodes codes={[...health.environment.advisoryFindingCodes, ...health.environment.nonBlockingFindingCodes]} emptyLabel="None reported" /></div>
+                  <div><span className="signal-kicker">FAILED INVARIANTS</span><FindingCodes codes={health.stability.failedInvariantCodes} emptyLabel="None reported" /></div>
+                </div>
+              </> : <div className="health-unavailable"><strong>Health evidence unavailable.</strong><span>Regenerate and publish a validated local snapshot; the documentation view remains available.</span></div>}
+            </div>
+
+            <aside className="health-boundary" aria-label="Health evidence boundary">
+              <span className="signal-kicker">EVIDENCE BOUNDARY</span>
+              <p>{health?.evidenceBoundary || 'The current page has no valid environment-health snapshot.'}</p>
+              <dl>
+                <div><dt>Snapshot digest</dt><dd>{health?.contentDigest.slice(0, 12) || 'unavailable'}</dd></div>
+                <div><dt>Documentation</dt><dd>{statusMeta.description}</dd></div>
+              </dl>
+            </aside>
+          </div>
+        </section>
+
+        <section className="content-section section-anchor" id="capabilities" data-uiux-id="capabilities">
           <div className="section-heading-row">
-            <div><p className="section-index">01 / CAPABILITY MAP</p><h2>Make the work legible.</h2></div>
+            <div><p className="section-index">02 / CAPABILITY MAP</p><h2>Make the work legible.</h2></div>
             <p className="section-summary">The plugin turns operational uncertainty into named gates, bounded actions, and source-linked evidence. Each family is useful on its own; together they keep a manager thread honest.</p>
           </div>
           <div className="capability-list">
@@ -215,7 +313,7 @@ function App() {
 
         <section className="content-section comparison-section section-anchor" id="comparison">
           <div className="section-heading-row">
-            <div><p className="section-index">02 / WORKFLOW DIFFERENCE</p><h2>With a trail. Or without one.</h2></div>
+            <div><p className="section-index">03 / WORKFLOW DIFFERENCE</p><h2>With a trail. Or without one.</h2></div>
             <p className="section-summary">This is a workflow comparison, not an uptime promise. Project Manager helps the work remain inspectable when the environment is degraded, stale, or mid-recovery.</p>
           </div>
           <div className="comparison-grid">
@@ -234,7 +332,7 @@ function App() {
 
         <section className="content-section roadmap-section section-anchor" id="roadmap">
           <div className="section-heading-row">
-            <div><p className="section-index">03 / DEVELOPMENT ROADMAP</p><h2>Progress with receipts.</h2></div>
+            <div><p className="section-index">04 / DEVELOPMENT ROADMAP</p><h2>Progress with receipts.</h2></div>
             <p className="section-summary">Roadmap phases are tied to dated decisions, bugs, migrations, plans, and specifications. “Complete” means the repository records the work—not that every runtime or production claim is proven.</p>
           </div>
           <ol className="roadmap-timeline">
@@ -253,7 +351,7 @@ function App() {
 
         <section className="content-section docs-section section-anchor" id="docs">
           <div className="section-heading-row">
-            <div><p className="section-index">04 / DOCUMENTATION EXPLORER</p><h2>Every decision, in context.</h2></div>
+            <div><p className="section-index">05 / DOCUMENTATION EXPLORER</p><h2>Every decision, in context.</h2></div>
             <p className="section-summary">Search the local snapshot by title, path, or body. Select a record to read the Markdown in full, with provenance kept beside the content.</p>
           </div>
           <div className="docs-layout">
@@ -279,7 +377,7 @@ function App() {
 
         <section className="content-section sync-section section-anchor" id="sync">
           <div className="sync-panel">
-            <div className="sync-panel-copy"><p className="section-index">05 / SYNC CENTER</p><h2>Local truth, remote reach.</h2><p>The hosted page cannot watch your Windows disk. Run the local sync command when docs change; the next published snapshot carries the revision here. GitHub refresh is optional and always falls back safely.</p><button className="primary-action" type="button" onClick={handleRefresh} disabled={isRefreshing}><Icon name="refresh" size={16} />{isRefreshing ? 'Refreshing…' : 'Refresh from GitHub'}</button></div>
+            <div className="sync-panel-copy"><p className="section-index">06 / SYNC CENTER</p><h2>Local truth, remote reach.</h2><p>The hosted page cannot watch your Windows disk. Run the local sync command when docs change; the next published snapshot carries the revision here. GitHub refresh is optional and always falls back safely.</p><button className="primary-action" type="button" onClick={handleRefresh} disabled={isRefreshing}><Icon name="refresh" size={16} />{isRefreshing ? 'Refreshing…' : 'Refresh from GitHub'}</button></div>
             <div className="sync-panel-data"><div className="sync-state-header"><StatusMark status={syncState.status} /><span className="sync-message" aria-live="polite">{syncState.message}</span></div><dl className="sync-facts"><div><dt>LOCAL SNAPSHOT</dt><dd>{formatDateTime(dataset.generatedAt)}</dd></div><div><dt>REVISION</dt><dd>{formatRevision(dataset.source.revision)}</dd></div><div><dt>DOCUMENTS</dt><dd>{dataset.generated.documentCount}</dd></div><div><dt>REMOTE CHECK</dt><dd>{syncState.fetchedAt ? formatDateTime(syncState.fetchedAt) : 'Not yet checked'}</dd></div></dl><div className="sync-command"><span className="signal-kicker">RUN LOCALLY</span><code>pwsh -NoProfile -File .\scripts\Sync-ProjectManagerRoadmapSite.ps1</code></div></div>
           </div>
         </section>

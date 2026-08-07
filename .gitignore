@@ -10,3 +10,5 @@ site/dist/
 docs/project-manager/worker-registry.json
 docs/project-manager/manager-ledger.jsonl
 docs/project-manager/transaction-journal.jsonl
+output/playwright/
+.playwright-cli/
