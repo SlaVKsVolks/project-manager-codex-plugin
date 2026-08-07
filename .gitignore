@@ -6,3 +6,4 @@ scripts/wrapper-src/obj/
 scripts/wrapper-build/
 site/node_modules/
 site/dist/
+.worktrees/
