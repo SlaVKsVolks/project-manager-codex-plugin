@@ -6,9 +6,9 @@
   "scripts": {
     "sync": "python ../scripts/sync_project_manager_roadmap_site.py",
     "dev": "vite --host 127.0.0.1",
-    "build": "vite build",
+    "build": "vite build && node scripts/build-sites-worker.mjs",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "node --test src/lib/sync.test.mjs src/lib/ui-contract.test.mjs"
+    "test": "node --test src/lib/sync.test.mjs src/lib/ui-contract.test.mjs worker/worker.test.mjs"
   },
   "dependencies": {
     "dompurify": "^3.1.6",
