@@ -7,3 +7,6 @@ scripts/wrapper-build/
 site/node_modules/
 site/dist/
 .worktrees/
+docs/project-manager/worker-registry.json
+docs/project-manager/manager-ledger.jsonl
+docs/project-manager/transaction-journal.jsonl
