@@ -11,7 +11,7 @@
 ## Global Constraints
 
 - Preserve every existing unrelated modification and untracked file in `C:\Users\SlaVKs\Documents\Github\project-manager`.
-- Make source edits only in `C:\Users\SlaVKs\.codex\worktrees\project-manager-rock-solid` on branch `codex/project-manager-rock-solid`.
+- Make source edits only in `C:\Users\SlaVKs\Documents\Github\project-manager\.worktrees\project-manager-rock-solid` on branch `codex/project-manager-rock-solid`.
 - Keep the live source checkout as the authoritative input for generated Markdown and runtime health.
 - Never serialize absolute paths, usernames, emails, thread IDs, process IDs, logs, commands, environment values, credentials, tokens, or private URLs into site data.
 - Do not create a D1 write endpoint, SIWC bypass token, public site, long-lived repository credential, localhost bridge, or app-owned authentication system.
@@ -27,7 +27,8 @@
 
 **Files:**
 - Verify only: `C:\Users\SlaVKs\Documents\Github\project-manager`
-- Create worktree: `C:\Users\SlaVKs\.codex\worktrees\project-manager-rock-solid`
+- Modify before worktree creation: `.gitignore`
+- Create worktree: `C:\Users\SlaVKs\Documents\Github\project-manager\.worktrees\project-manager-rock-solid`
 - Create branch: `codex/project-manager-rock-solid`
 
 **Interfaces:**
@@ -41,28 +42,36 @@ Run:
 ```powershell
 git -C C:\Users\SlaVKs\Documents\Github\project-manager rev-parse --show-toplevel
 git -C C:\Users\SlaVKs\Documents\Github\project-manager status --short
-Test-Path -LiteralPath C:\Users\SlaVKs\.codex\worktrees\project-manager-rock-solid
+Test-Path -LiteralPath C:\Users\SlaVKs\Documents\Github\project-manager\.worktrees\project-manager-rock-solid
 ```
 
 Expected: the repository root is exact, existing unrelated changes are visible, and the target worktree does not exist.
 
-- [ ] **Step 2: Create the isolated branch and worktree**
+- [ ] **Step 2: Ignore the project-local worktree directory**
+
+Run `git check-ignore -q .worktrees`. If it is not already ignored, add this exact line to `.gitignore`, verify the scoped diff, and commit it before creating the worktree:
+
+```gitignore
+.worktrees/
+```
+
+- [ ] **Step 3: Create the isolated branch and worktree**
 
 Run:
 
 ```powershell
-git -C C:\Users\SlaVKs\Documents\Github\project-manager worktree add -b codex/project-manager-rock-solid C:\Users\SlaVKs\.codex\worktrees\project-manager-rock-solid HEAD
+git -C C:\Users\SlaVKs\Documents\Github\project-manager worktree add -b codex/project-manager-rock-solid C:\Users\SlaVKs\Documents\Github\project-manager\.worktrees\project-manager-rock-solid HEAD
 ```
 
 Expected: Git creates the branch without changing the source checkout.
 
-- [ ] **Step 3: Verify isolation**
+- [ ] **Step 4: Verify isolation**
 
 Run:
 
 ```powershell
-git -C C:\Users\SlaVKs\.codex\worktrees\project-manager-rock-solid status --short
-git -C C:\Users\SlaVKs\.codex\worktrees\project-manager-rock-solid branch --show-current
+git -C C:\Users\SlaVKs\Documents\Github\project-manager\.worktrees\project-manager-rock-solid status --short
+git -C C:\Users\SlaVKs\Documents\Github\project-manager\.worktrees\project-manager-rock-solid branch --show-current
 ```
 
 Expected: empty status and branch `codex/project-manager-rock-solid`.
@@ -79,24 +88,34 @@ Expected: empty status and branch `codex/project-manager-rock-solid`.
 - Consumes: Project Manager `manager_registry_maintenance`, `manager_append_ledger_event`, `manager_read_worker_registry`, and `manager_read_ledger`.
 - Produces: an empty canonical registry plus a bootstrap decision event at stable absolute paths in the live source checkout.
 
-- [ ] **Step 1: Add a failing ignore/documentation contract test**
+- [ ] **Step 1: Add a failing runtime-path isolation test**
 
 Add `tests/test_project_manager_runtime_state_contract.py`:
 
 ```python
+import subprocess
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+RUNTIME_PATHS = (
+    "docs/project-manager/worker-registry.json",
+    "docs/project-manager/manager-ledger.jsonl",
+    "docs/project-manager/transaction-journal.jsonl",
+)
 
 
-def test_runtime_state_is_ignored_and_documented() -> None:
-    ignore = (ROOT / ".gitignore").read_text(encoding="utf-8")
-    readme = (ROOT / "docs/project-manager/README.md").read_text(encoding="utf-8")
-    assert "docs/project-manager/worker-registry.json" in ignore
-    assert "docs/project-manager/manager-ledger.jsonl" in ignore
-    assert "manager_environment_health" in readme
-    assert "DONT_NOTIFY" in readme
+def test_runtime_state_paths_are_ignored_by_git() -> None:
+    completed = subprocess.run(
+        ["git", "check-ignore", "--stdin"],
+        cwd=ROOT,
+        input="\n".join(RUNTIME_PATHS),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert completed.returncode == 0, completed.stderr
+    assert tuple(completed.stdout.splitlines()) == RUNTIME_PATHS
 ```
 
 - [ ] **Step 2: Run the focused test and verify RED**
@@ -107,7 +126,7 @@ Run:
 uv run --isolated --no-project --with pytest -m pytest tests/test_project_manager_runtime_state_contract.py -q
 ```
 
-Expected: FAIL because the runtime-state documentation and ignore entries do not exist.
+Expected: FAIL because the runtime-state ignore entries do not exist.
 
 - [ ] **Step 3: Add exact ignore rules and operating documentation**
 
@@ -256,24 +275,15 @@ git commit -m "feat: generate privacy-safe project manager health snapshots"
 - Create: `tests/test_project_manager_public_health_wrappers.py`
 
 **Interfaces:**
-- `Sync-ProjectManagerPublicHealth.ps1` accepts `-ProjectRoot`, `-OutputPath`, `-MaxAgeMinutes`, and optional `-PluginRoot`.
-- `Prepare-ProjectManagerRoadmapRelease.ps1` accepts `-SourceRoot`, `-DeploymentRoot`, and `-SkipBuild`.
+- `Sync-ProjectManagerPublicHealth.ps1` accepts `-ProjectRoot`, `-OutputPath`, `-MaxAgeMinutes`, optional `-PluginRoot`, and optional `-PythonExe`.
+- `Prepare-ProjectManagerRoadmapRelease.ps1` accepts `-SourceRoot`, `-DeploymentRoot`, `-SkipBuild`, optional `-DocumentationInputPath`, and optional `-HealthInputPath`.
 - Release preparation prints one compressed JSON object with `status`, `documentationChanged`, `healthChanged`, `changed`, `documentCount`, `healthDigest`, and `deploymentRoot`.
 
-- [ ] **Step 1: Write failing static wrapper contract tests**
+- [ ] **Step 1: Write failing behavioral wrapper tests**
 
-Assert the health wrapper contains:
+Run the actual health wrapper against a temporary fake plugin root containing two PowerShell wrappers that emit complete compact fixture JSON. Pass `sys.executable` through `-PythonExe`, assert exit code zero, parse the output file, and assert the exact safe health fields and digest. Snapshot the temp directory before and after the call and assert that no raw health or stability file remains.
 
-```python
-assert "Invoke-ProjectManagerEnvironmentHealth.ps1" in text
-assert "Get-ProjectManagerStabilityAudit.ps1" in text
-assert "-Compact" in text
-assert "finally" in text
-assert "Remove-Item -LiteralPath" in text
-assert "project_manager_public_health.py" in text
-```
-
-Assert the release wrapper names only the two generated data destinations and refuses a dirty deployment worktree outside those paths.
+Create a temporary Git repository on branch `codex/project-manager-rock-solid` with the two generated destination files. Run the actual release wrapper with controlled `-DocumentationInputPath`, `-HealthInputPath`, and `-SkipBuild`; assert it changes only the two destination files and reports `changed=true`. Dirty an unrelated file, rerun, and assert non-zero exit without modifying either generated destination.
 
 - [ ] **Step 2: Run the focused tests and verify RED**
 
@@ -281,7 +291,7 @@ Assert the release wrapper names only the two generated data destinations and re
 uv run --isolated --no-project --with pytest -m pytest tests/test_project_manager_public_health_wrappers.py -q
 ```
 
-Expected: FAIL because both wrappers are absent.
+Expected: FAIL because both production wrappers are absent.
 
 - [ ] **Step 3: Implement active plugin-root resolution**
 
@@ -304,7 +314,7 @@ The release wrapper must:
 1. verify both roots are absolute directories;
 2. verify the deployment root is on `codex/project-manager-rock-solid` and not detached;
 3. reject existing changes outside the two generated files;
-4. generate documentation and health into temporary files;
+4. generate documentation and health into temporary files, or consume the two explicit controlled input paths when supplied;
 5. compare SHA-256 hashes before copying;
 6. copy only changed generated files;
 7. run Python tests, site tests, and the site build unless `-SkipBuild` is passed; and
@@ -337,7 +347,6 @@ git commit -m "feat: prepare bounded roadmap health releases"
 - Create: `site/src/lib/health.test.mjs`
 - Modify: `site/src/App.jsx`
 - Modify: `site/src/styles.css`
-- Modify: `site/src/lib/ui-contract.test.mjs`
 - Modify: `site/package.json`
 - Modify: `site/src/lib/config.js`
 
@@ -366,7 +375,7 @@ Assert `coordinationGate !== 'allow'`, `heartbeatReady !== true`, or `safeForMan
 pnpm --ignore-workspace test
 ```
 
-Expected: module-not-found for `health.js` or missing health contract text.
+Expected: module-not-found for `health.js`.
 
 - [ ] **Step 3: Implement validation and classification**
 
@@ -384,9 +393,9 @@ Import the bundled health JSON and render:
 
 Use semantic `section`, `dl`, `time`, and status text. Color may reinforce but never replace labels.
 
-- [ ] **Step 5: Update the UI contract and package test command**
+- [ ] **Step 5: Update the package test command**
 
-Require `Environment health`, all five labels, the evidence note, and `health.test.mjs`. Keep existing sync and worker tests.
+Add the behavioral `health.test.mjs` suite to the package test command. Keep existing sync and worker tests, and do not add source-text assertions for the React implementation.
 
 - [ ] **Step 6: Run tests and build**
 
@@ -400,7 +409,7 @@ Expected: all Node tests PASS and `dist/server/index.js` exists. Record existing
 - [ ] **Step 7: Commit the site health experience**
 
 ```powershell
-git add -- site/package.json site/src/App.jsx site/src/styles.css site/src/lib/config.js site/src/lib/health.js site/src/lib/health.test.mjs site/src/lib/ui-contract.test.mjs
+git add -- site/package.json site/src/App.jsx site/src/styles.css site/src/lib/config.js site/src/lib/health.js site/src/lib/health.test.mjs
 git diff --cached --check
 git commit -m "feat: show live project manager health on the roadmap"
 ```
@@ -503,7 +512,7 @@ Call `codex_app__automation_update` in view mode. Verify ID, active status, targ
 - [ ] **Step 1: Run full release preparation**
 
 ```powershell
-pwsh -NoProfile -File .\scripts\Prepare-ProjectManagerRoadmapRelease.ps1 -SourceRoot C:\Users\SlaVKs\Documents\Github\project-manager -DeploymentRoot C:\Users\SlaVKs\.codex\worktrees\project-manager-rock-solid
+pwsh -NoProfile -File .\scripts\Prepare-ProjectManagerRoadmapRelease.ps1 -SourceRoot C:\Users\SlaVKs\Documents\Github\project-manager -DeploymentRoot C:\Users\SlaVKs\Documents\Github\project-manager\.worktrees\project-manager-rock-solid
 ```
 
 Expected: valid summary JSON, full tests/build pass, and changes limited to generated site data plus any already-reviewed source changes.
