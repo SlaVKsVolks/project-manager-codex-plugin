@@ -24,12 +24,29 @@ test('falls back document routes to the app shell', async () => {
       fetch(request) {
         const pathname = new URL(request.url).pathname;
         calls.push(pathname);
-        return Promise.resolve(pathname === '/' ? new Response('<!doctype html>') : new Response('missing', { status: 404 }));
+        return Promise.resolve(pathname === '/index.html' ? new Response('<!doctype html>') : new Response('missing', { status: 404 }));
       },
     },
   });
 
   assert.equal(response.status, 200);
   assert.match(await response.text(), /doctype html/);
-  assert.deepEqual(calls, ['/roadmap', '/']);
+  assert.deepEqual(calls, ['/roadmap', '/index.html']);
+});
+
+test('serves the app shell for the root route when the asset binding does not rewrite it', async () => {
+  const calls = [];
+  const response = await worker.fetch(new Request('https://example.test/'), {
+    ASSETS: {
+      fetch(request) {
+        const pathname = new URL(request.url).pathname;
+        calls.push(pathname);
+        return Promise.resolve(pathname === '/index.html' ? new Response('<!doctype html>') : new Response('missing', { status: 404 }));
+      },
+    },
+  });
+
+  assert.equal(response.status, 200);
+  assert.match(await response.text(), /doctype html/);
+  assert.deepEqual(calls, ['/', '/index.html']);
 });

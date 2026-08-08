@@ -4,7 +4,7 @@ function documentRequest(url) {
 
 function rootRequest(request) {
   const url = new URL(request.url);
-  url.pathname = '/';
+  url.pathname = '/index.html';
   url.search = '';
   return new Request(url, request);
 }
