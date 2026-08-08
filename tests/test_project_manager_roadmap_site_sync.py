@@ -79,7 +79,11 @@ def test_build_site_dataset_preserves_manifest_records_and_stable_document_ids(t
         "objective-runner-august",
         "canonical-health-august",
         "hosted-roadmap-surface",
+        "continuous-reliability",
     }
+    roadmap_by_id = {item["id"]: item for item in first["roadmap"]}
+    assert roadmap_by_id["hosted-roadmap-surface"]["status"] == "complete"
+    assert roadmap_by_id["continuous-reliability"]["status"] == "next"
     assert [document["id"] for document in first["documents"]] == [
         document["id"] for document in second["documents"]
     ]

@@ -201,18 +201,38 @@
     },
     {
       "id": "hosted-roadmap-surface",
-      "phase": "Next · Hosted operator surface",
+      "phase": "Delivered · Hosted operator surface",
       "dateFrom": "2026-08-08",
-      "dateTo": null,
-      "status": "next",
-      "title": "Give the project a live, source-backed front door",
-      "outcome": "Publish the hybrid roadmap/docs surface, add richer live executor and rollout evidence when those runtimes exist, and keep local sync visible.",
+      "dateTo": "2026-08-08",
+      "status": "complete",
+      "title": "Publish a live, source-backed front door",
+      "outcome": "Delivered the private hybrid roadmap and docs surface with local generation, safe GitHub refresh, embedded Sites assets, health evidence, and source-linked claims.",
       "criteria": [
         "Local changes can regenerate the bundled snapshot.",
         "Remote refresh is validated and falls back safely.",
         "Every capability and roadmap claim links to its source."
       ],
       "evidenceCeiling": "Hosted documentation surface; not a live Codex host monitor.",
+      "sourcePatterns": [
+        "README.md",
+        "DEVELOPMENT_IMPROVEMENTS.md",
+        "docs/superpowers/specs/2026-08-07-project-manager-roadmap-site-design.md"
+      ]
+    },
+    {
+      "id": "continuous-reliability",
+      "phase": "Next · Continuous operator reliability",
+      "dateFrom": "2026-08-08",
+      "dateTo": null,
+      "status": "next",
+      "title": "Make live evidence richer and self-checking",
+      "outcome": "Keep the owner-only surface fresh automatically, surface release and automation receipts, and add richer executor evidence only when Codex exposes safe runtime primitives.",
+      "criteria": [
+        "A bounded heartbeat refreshes health and documentation without widening file ownership.",
+        "Release state includes source revision, freshness, deployment, and automation receipts.",
+        "A stale or failed refresh remains visible and cannot masquerade as healthy live evidence."
+      ],
+      "evidenceCeiling": "Private hosted operator evidence; not proof that an already-loaded Codex binding is healthy.",
       "sourcePatterns": [
         "README.md",
         "DEVELOPMENT_IMPROVEMENTS.md",
