@@ -1,26 +1,24 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-08T01:46:08Z",
+  "generatedAt": "2026-08-10T10:17:11Z",
   "maxAgeMinutes": 30,
   "source": {
-    "revision": "cdf2f4bf767e619a9373314e8a8b2ca0329c8249",
+    "revision": "6deff5dc7b086957f9dcc1cb8264150be3b6977c",
     "dirty": true
   },
   "environment": {
-    "pluginVersion": "0.4.11+codex.20260807222115",
+    "pluginVersion": "0.4.14+codex.20260808132848",
     "overallStatus": "healthy",
     "coordinationGate": "allow",
     "heartbeatReady": true,
     "freshThreadCallability": "callable",
-    "sameLoadedTurnCallability": "not_callable",
+    "sameLoadedTurnCallability": "callable",
     "blockingFindingCodes": [],
     "advisoryFindingCodes": [
       "live_model_catalog_advisory"
     ],
     "nonBlockingFindingCodes": [
-      "codex_browser_use_cached_version_stale",
-      "codex_thread_surface_no_turns_historical",
-      "codex_thread_workspace_hint_isolated_readable_gap"
+      "codex_browser_use_cached_version_stale"
     ]
   },
   "stability": {
@@ -31,5 +29,5 @@
     "failedInvariantCodes": []
   },
   "evidenceBoundary": "Snapshot evidence is not proof of this viewer's current loaded-turn binding.",
-  "contentDigest": "a8b1260a4b8b457902d252160eab6968cc6243ae7d98c410f5fbf08b50a72d6e"
+  "contentDigest": "dfb17071044697ce335d8e3eeab7e22b1e11fb9427445dd522c3bfb0088161ac"
 }
